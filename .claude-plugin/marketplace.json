@@ -1,0 +1,13 @@
+{
+  "name": "claude-todo-statusline",
+  "owner": {
+    "name": "claude-todo-statusline contributors"
+  },
+  "plugins": [
+    {
+      "name": "todo-statusline",
+      "source": "./",
+      "description": "Session-scoped todo list with a /todo skill and statusline progress display"
+    }
+  ]
+}

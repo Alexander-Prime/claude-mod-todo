@@ -1,0 +1,5 @@
+{
+  "name": "todo-statusline",
+  "description": "Session-scoped todo list with a /todo skill and statusline progress display",
+  "version": "0.1.0"
+}
