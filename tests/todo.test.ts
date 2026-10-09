@@ -77,11 +77,12 @@ test('bar draws a glyph per item, scaled past the maximum', () => {
 
 test('/todo add, done and next write the file', async ($, on) => {
   const file: { text: string | undefined } = { text: undefined }
-  const submitted: string[] = []
+  const submitted: { text: string; context: readonly string[] }[] = []
   const clock = mock.clock(on)
+  const session = mock.session(on)
   fakeHost(on, file)
   on('prompt.submit', ($, e) => {
-    submitted.push(e.text)
+    submitted.push({ text: e.text, context: e.context ?? [] })
 
     return { text: e.text }
   })
@@ -105,7 +106,11 @@ test('/todo add, done and next write the file', async ($, on) => {
   // The prompt is submitted after the command returns.
   await clock.advance(0)
   expect(submitted.length).toBe(1)
-  expect(submitted[0]).toContain('"fourth"')
+  // The visible prompt is short; the instructions go in first as a hidden row.
+  expect(submitted[0]?.text).toBe('Continue with the next todo item.')
+  const rows = session.appended()
+  expect(rows.length).toBe(1)
+  expect(JSON.stringify(rows[0]?.message.content)).toContain('\\"fourth\\"')
 })
 
 test('each overlay row is one button that toggles its item', async ($, on) => {

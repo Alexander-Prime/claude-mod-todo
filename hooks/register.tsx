@@ -135,7 +135,7 @@ const instructions = (path: string) => `# Session todo list
 
 This session's todo list is the markdown file ${path}. The user sees its progress in a bar below the prompt and manages it with /todo. Edit the file directly with Read, Edit and Write: one item per line, \`- [ ] text\` for an open item and \`- [x] text\` for a done one, each at the start of the line. The first open item is the current one.
 
-Maintain the list as you work: add items when taking on new multi-step work, and keep item text accurate as scope changes. Mark an item done only when the user asks, or when moving on to a new item with nothing outstanding on the current one; finishing the work is not itself a reason. When the list changes outside your own edits, its current content arrives with the next prompt in a <session-todo-list> block.`
+Maintain the list as you work: add items when taking on new multi-step work, and keep item text accurate as scope changes. Mark an item done only when the user asks, or when moving on to a new item with nothing outstanding on the current one; finishing the work is not itself a reason. Leave items open silently: don't mention that you're leaving one unchecked, or otherwise report on the list's state, since the user already sees it. When the list changes outside your own edits, its current content arrives with the next prompt in a <session-todo-list> block. The user, /todo commands and other tools change the list between turns as a matter of course, so the most recent version you have seen is authoritative: don't treat differences from earlier command output or conversation history as a problem.`
 
 const reminder = (path: string, text: string, why: 'changed' | 'compacted') => {
   const block = `<session-todo-list path="${path}">\n${text === '' ? '' : `${text.trimEnd()}\n`}</session-todo-list>`
@@ -149,8 +149,34 @@ const reminder = (path: string, text: string, why: 'changed' | 'compacted') => {
     : `${block}\nThe session todo list changed since you last saw it; this is its current content.`
 }
 
-const nextPrompt = (item: string) =>
+// `/todo next` starts its turn with a short prompt, which the transcript shows,
+// after appending its instructions as a row only the model reads. (A plugin's
+// own prompt.submit hooks don't see the prompts it submits, so they can't be
+// attached there as context.)
+const NEXT_PROMPT = 'Continue with the next todo item.'
+
+const nextInstructions = (item: string) =>
   `Proceed with the next item on the todo list: "${item}". Before writing anything, compare what it asks for against the current state of the project, reading the relevant code rather than assuming the task is still needed or shaped as described. If its scope or approach is ambiguous, clarify with the AskUserQuestion tool first.`
+
+// The hidden row also carries the list when it changed since the model saw it
+// (it just did, when the current item was checked off), since the dirty check
+// at prompt.submit doesn't see this prompt either.
+const startNext = async ($: EngineInterface, item: string) => {
+  const text = await readList($)
+  const isChanged = text !== ((await read($, seen)) ?? '')
+  const notes = [
+    ...(isChanged ? [reminder(await todoPath($), text, 'changed')] : []),
+    nextInstructions(item),
+  ]
+
+  if (isChanged) {
+    await update($, seen, () => text)
+  }
+  await $.session.append({
+    message: { type: 'user', content: [{ type: 'text', text: notes.join('\n\n') }] },
+  })
+  await $.prompt.submit({ text: NEXT_PROMPT, asUser: true })
+}
 
 export const register: Register = on => {
   on('session.start', async ($, e, next) => {
@@ -271,7 +297,7 @@ export const register: Register = on => {
         }
         // Submitted once this command has returned: from inside its hook the
         // prompt would wait on the turn the command itself holds.
-        $.clock.after(0, () => void $.prompt.submit({ text: nextPrompt(upcoming.text), asUser: true }))
+        $.clock.after(0, () => void startNext($, upcoming.text))
 
         return { text: `${doneLine}Next: ${upcoming.text}` }
       }

@@ -34,7 +34,10 @@ constraints that aren't visible in the code.
 - Edits from the overlay address an item by line but only apply while that line still holds
   the item as parsed, so a stale click can't land on whatever moved into its place.
 - `/todo next` submits its prompt from a zero-delay timer: `$.prompt.submit` called inside a
-  `command.run` hook is refused, since it would wait on the turn the command holds.
+  `command.run` hook is refused, since it would wait on the turn the command holds. The
+  visible prompt is one short line; the instructions (and the list, if changed) go in first
+  as a hidden `$.session.append` row, because a plugin's own `prompt.submit` hooks don't see
+  the prompts it submits and so can't attach context to them.
 
 ## Development
 
