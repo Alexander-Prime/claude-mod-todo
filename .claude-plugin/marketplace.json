@@ -7,7 +7,7 @@
     {
       "name": "todo-statusline",
       "source": "./",
-      "description": "Session-scoped todo list with a /todo skill and statusline progress display"
+      "description": "Session-scoped todo list with a progress bar below the prompt and a /todo overlay to manage it"
     }
   ]
 }
