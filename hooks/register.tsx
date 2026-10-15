@@ -130,6 +130,8 @@ const ROW_KEY = /^row:\d+:(\d+)$/
 const CHECKED = '\u{F0135} ' // md-checkbox_marked_outline
 const UNCHECKED = '\u{F0131} ' // md-checkbox_blank_outline
 const ADD = '\u{F0415} ' // md-plus
+// The footer bar's link to the list file.
+const LINK = '\u{F0337}' // md-link
 
 const instructions = (path: string) => `# Session todo list
 
@@ -348,17 +350,22 @@ export const register: Register = on => {
       return next(e)
     }
     const modes = e.props.modes.length > 0 ? await next(e) : undefined
-    const { Box, Text } = $.ui.resolve(e)
+    const { Box, Link, Text } = $.ui.resolve(e)
     const done = items.filter(item => item.isDone).length
     const open = items.filter(item => !item.isDone).slice(0, BAND_ITEMS)
 
     return (
       <Box flexDirection="column">
         {modes}
-        <Text dimColor={open.length === 0}>
-          {CHECKED}
-          {done}/{items.length} {bar(done, items.length, BAND_GLYPHS)}
-        </Text>
+        <Box flexDirection="row">
+          <Text dimColor={open.length === 0}>
+            {CHECKED}
+            {done}/{items.length} {bar(done, items.length, BAND_GLYPHS)}{' '}
+          </Text>
+          <Link href={`file://${await todoPath($)}`}>
+            <Text dimColor>{LINK}</Text>
+          </Link>
+        </Box>
         {open.map((item, i) => (
           <Text bold={i === 0} dimColor={i === BAND_ITEMS - 1} wrap="truncate-end">
             {i === 0 ? '❯' : '∘'} {item.text}
