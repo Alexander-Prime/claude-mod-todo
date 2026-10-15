@@ -124,13 +124,9 @@ const addKey = (count: number) => `add:${count}`
 const editKey = (count: number, line: number) => `edit:${count}:${line}`
 const ROW_KEY = /^row:\d+:(\d+)$/
 
-// The overlay's checkbox-column markers: Nerd Font Material Design icons,
-// one-cell monochrome glyphs with no emoji forms, each followed by a space.
-// CHECKED also heads the progress summaries.
-const CHECKED = '\u{F0135} ' // md-checkbox_marked_outline
-const UNCHECKED = '\u{F0131} ' // md-checkbox_blank_outline
-const ADD = '\u{F0415} ' // md-plus
-// The footer bar's link to the list file.
+const CHECKED = '\u{F0135}' // md-checkbox_marked_outline
+const UNCHECKED = '\u{F0131}' // md-checkbox_blank_outline
+const ADD = '\u{F0415}' // md-plus
 const LINK = '\u{F0337}' // md-link
 
 const instructions = (path: string) => `# Session todo list
@@ -359,8 +355,7 @@ export const register: Register = on => {
         {modes}
         <Box flexDirection="row">
           <Text dimColor={open.length === 0}>
-            {CHECKED}
-            {done}/{items.length} {bar(done, items.length, BAND_GLYPHS)}{' '}
+            {CHECKED} {done}/{items.length} {bar(done, items.length, BAND_GLYPHS)}{' '}
           </Text>
           <Link href={`file://${await todoPath($)}`}>
             <Text dimColor>{LINK}</Text>
@@ -417,8 +412,7 @@ export const register: Register = on => {
       <Box flexDirection="column">
         <Box flexDirection="column" paddingLeft={2}>
           <Text bold={done < items.length} dimColor={done === items.length}>
-            {CHECKED}
-            {done}/{items.length} {bar(done, items.length, Math.max(1, e.props.bodyColumns - 20))}{' '}
+            {CHECKED} {done}/{items.length} {bar(done, items.length, Math.max(1, e.props.bodyColumns - 20))}{' '}
             {percent}%
           </Text>
           <Link href={`file://${path}`}>
@@ -432,7 +426,7 @@ export const register: Register = on => {
             // The row being edited: a field holding its text, in the text's place.
             <Box flexDirection="row">
               {item === active ? <Text bold>❯ </Text> : <Text>  </Text>}
-              <Text>{item.isDone ? CHECKED : UNCHECKED}</Text>
+              <Text>{item.isDone ? CHECKED : UNCHECKED} </Text>
               <Input
                 key={editKey(items.length, item.line)}
                 value={item.text}
@@ -449,7 +443,7 @@ export const register: Register = on => {
               onPress={() => mutate($, text => setDone(text, item, !item.isDone))}
             >
               {item === active ? <Text bold>❯ </Text> : '  '}
-              {item.isDone ? CHECKED : UNCHECKED}
+              {item.isDone ? CHECKED : UNCHECKED}{' '}
               <Text bold={item === active} dimColor={item.isDone} strikethrough={item.isDone}>
                 {fitRow(item.text, rowWidth)[0]}
               </Text>
@@ -459,11 +453,11 @@ export const register: Register = on => {
         )}
         {Input !== undefined && (
           // The add field sits as the checklist's last row, indented like an
-          // item, with a plus in the checkbox's four cells.
+          // item, with a plus in the checkbox's place.
           <Box flexDirection="row">
             <Text>  </Text>
             <Text dimColor bold>
-              {ADD}
+              {ADD}{' '}
             </Text>
             <Input
               key={addKey(items.length)}
