@@ -1,11 +1,11 @@
 {
-  "name": "claude-todo-statusline",
+  "name": "claude-mod-todo",
   "owner": {
-    "name": "claude-todo-statusline contributors"
+    "name": "claude-mod-todo contributors"
   },
   "plugins": [
     {
-      "name": "todo-statusline",
+      "name": "mod-todo",
       "source": "./",
       "description": "Session-scoped todo list with a progress bar below the prompt and a /todo overlay to manage it"
     }

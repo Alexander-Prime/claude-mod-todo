@@ -2,7 +2,7 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-# claude-todo-statusline
+# claude-mod-todo
 
 A Claude Code mod (a plugin of function hooks): a session-scoped todo list file, a bar below
 the prompt showing its progress, a `/todo` command and overlay to manage it, and context that
@@ -17,7 +17,7 @@ constraints that aren't visible in the code.
   tools, so don't extend it.
 - **List file location.** `~/.claude/todos/<session_id>.md`, built by `todoDir`/`todoPath` in
   `register.tsx`. The session id comes from `$.session.id()`.
-- **State keys** live under the plugin name `todo-statusline` and are declared in
+- **State keys** live under the plugin name `mod-todo` and are declared in
   `types/index.d.ts`; `claude plugin validate` holds the module's keys to that contract.
   Renaming the plugin means renaming every key.
 

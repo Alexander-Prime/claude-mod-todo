@@ -1,5 +1,5 @@
 {
-  description = "Claude TODO Statusline";
+  description = "Claude Mod Todo";
 
   inputs = {
     nixpkgs.url = "github:NixOs/nixpkgs/nixos-unstable";

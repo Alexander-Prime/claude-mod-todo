@@ -121,7 +121,7 @@ test('each overlay row is one button that toggles its item', async ($, on) => {
 
   for (const surface of ['terminal', 'desktop'] as const) {
     const ui = await $.ui.mount({
-      plugin: 'todo-statusline',
+      plugin: 'mod-todo',
       surface,
       component: 'Pane',
       requestId: 'todo',

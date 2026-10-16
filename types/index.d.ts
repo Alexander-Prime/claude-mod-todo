@@ -1,6 +1,6 @@
 declare module 'claude-code' {
   interface PluginState {
-    'todo-statusline': {
+    'mod-todo': {
       // The list file's text as the watcher last read it; '' when missing.
       list: string
       // The list's text as the model last saw it (its own read or edit, or an

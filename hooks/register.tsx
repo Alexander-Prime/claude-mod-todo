@@ -10,11 +10,11 @@ const PRUNE_DAYS = 30
 const BAND_GLYPHS = 20
 const BAND_ITEMS = 3
 
-const list = atom({ plugin: 'todo-statusline', key: 'list' } as const, '')
-const seen = atom({ plugin: 'todo-statusline', key: 'seen' } as const, null)
-const draft = atom({ plugin: 'todo-statusline', key: 'draft' } as const, '')
-const cursor = atom({ plugin: 'todo-statusline', key: 'cursor' } as const, null)
-const editing = atom({ plugin: 'todo-statusline', key: 'editing' } as const, null)
+const list = atom({ plugin: 'mod-todo', key: 'list' } as const, '')
+const seen = atom({ plugin: 'mod-todo', key: 'seen' } as const, null)
+const draft = atom({ plugin: 'mod-todo', key: 'draft' } as const, '')
+const cursor = atom({ plugin: 'mod-todo', key: 'cursor' } as const, null)
+const editing = atom({ plugin: 'mod-todo', key: 'editing' } as const, null)
 
 const USAGE = 'Usage: /todo [add <text> | done | next]'
 
@@ -194,7 +194,7 @@ export const register: Register = on => {
   on('prompt.compose', async ($, e, next) => {
     const composed = await next(e)
     const section = {
-      id: 'todo-statusline:instructions',
+      id: 'mod-todo:instructions',
       text: instructions(await todoPath($)),
       scope: 'session',
     } as const

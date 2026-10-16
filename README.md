@@ -1,4 +1,4 @@
-# claude-todo-statusline
+# claude-mod-todo
 
 A Claude Code mod that restores a user-facing todo list on models where the built-in
 todo tools are disabled. The list is a session-scoped markdown checklist that the model
@@ -28,7 +28,7 @@ terminal font needs to be a Nerd Font.
 ## Install
 
 ```
-/plugin install todo-statusline --marketplace Alexander-Prime/claude-todo-statusline
+/plugin install mod-todo --marketplace Alexander-Prime/claude-mod-todo
 ```
 
 ## Commands
