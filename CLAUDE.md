@@ -52,5 +52,5 @@ constraints that aren't visible in the code.
 - Type-check with `tsc -p .` (TypeScript isn't in the dev shell: `nix shell nixpkgs#typescript`).
   The root `tsconfig.json` extends the one the engine lays in `.claude-plugin/types/` whenever
   it loads the mod from this folder, so that directory exists only after a load.
-- Bump `version` in `.claude-plugin/plugin.json` on release; the marketplace entry in
-  `.claude-plugin/marketplace.json` points at `./` and carries no version of its own.
+- Neither `.claude-plugin/plugin.json` nor the marketplace entry carries a version, so
+  installs update by commit. Don't add one.

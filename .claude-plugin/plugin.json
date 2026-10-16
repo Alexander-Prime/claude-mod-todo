@@ -1,6 +1,5 @@
 {
   "name": "mod-todo",
   "description": "Session-scoped todo list with a progress bar below the prompt and a /todo overlay to manage it",
-  "version": "0.1.0",
   "types": "./types/index.d.ts"
 }
