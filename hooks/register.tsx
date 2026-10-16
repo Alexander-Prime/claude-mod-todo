@@ -55,6 +55,16 @@ const mutate = async ($: EngineInterface, edit: (text: string) => string) => {
   await refresh($)
 }
 
+// The file is created on first use of the mod, not at session start, so an
+// idle install leaves nothing on disk.
+const ensureFile = async ($: EngineInterface) => {
+  const path = await todoPath($)
+
+  if (!(await $.fs.exists(path))) {
+    await $.fs.write(path, '')
+  }
+}
+
 const completeCurrent = async ($: EngineInterface): Promise<TodoItem | undefined> => {
   const item = current(parse(await readList($)))
 
@@ -258,6 +268,10 @@ export const register: Register = on => {
   on('tool.check', { tool: /^(Read|Edit|Write)$/ }, async ($, e, next) => {
     const path = (e.input as { file_path?: unknown } | null)?.file_path
 
+    if (path === (await todoPath($))) {
+      await ensureFile($)
+    }
+
     return (await isTodoFile($, path))
       ? { decision: 'allow', reason: 'session todo list maintenance' }
       : next(e)
@@ -265,6 +279,7 @@ export const register: Register = on => {
 
   on('command.run', { command: 'todo' }, async ($, e) => {
     const [, verb = '', rest = ''] = /^(\S*)\s*([\s\S]*)$/.exec(e.args.trim()) ?? []
+    await ensureFile($)
 
     switch (verb) {
       case '': {

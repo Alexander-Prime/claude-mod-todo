@@ -26,6 +26,7 @@ const fakeHost = (on: On, file: { text: string | undefined }) => {
 
     return { value: undefined }
   })
+  on('fs.exists', ($, e) => ({ value: e.path === PATH && file.text !== undefined }))
   on('fs.stat', ($, e) => {
     if (e.path !== PATH || file.text === undefined) {
       throw new Error('ENOENT')
@@ -116,6 +117,9 @@ test('/todo add, done and next write the file', async ($, on) => {
 test('each overlay row is one button that toggles its item', async ($, on) => {
   const file: { text: string | undefined } = { text: undefined }
   fakeHost(on, file)
+  // Any /todo is a first use, so even one that changes nothing creates the file.
+  await $.command.run({ ...RUN, command: 'todo', args: 'done' })
+  expect(file.text).toBe('')
   await $.command.run({ ...RUN, command: 'todo', args: 'add first' })
   await $.command.run({ ...RUN, command: 'todo', args: 'add second' })
 
